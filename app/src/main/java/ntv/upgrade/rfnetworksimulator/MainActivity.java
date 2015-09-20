@@ -1,15 +1,17 @@
 package ntv.upgrade.rfnetworksimulator;
 
 import android.app.AlertDialog;
+import android.app.DialogFragment;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -18,6 +20,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -26,19 +31,28 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolygonOptions;
 
-import java.util.ArrayList;
-
+import ntv.upgrade.rfnetworksimulator.dummy.DummySiteList;
 import ntv.upgrade.rfnetworksimulator.site.Site;
 import ntv.upgrade.rfnetworksimulator.tools.CheckServices;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
+        EditSiteDialogFragment.OnFragmentInteractionListener,
+        AreYouSureDialogFragment.OnFragmentInteractionListener {
 
+    // Site used to handle a single site
+    protected static Site mSite;
     private final String LOG_TAG = MainActivity.class.getSimpleName();
+    Location mLastLocation;
     // Client used to interact with Google APIs.
     private GoogleApiClient mGoogleApiClient;
     // Might be null if Google Play services APK is not available.
@@ -46,9 +60,10 @@ public class MainActivity extends AppCompatActivity
     private LocationRequest mLocationRequest;
     // Monitors camera position
     private CameraPosition mCameraPosition;
-    // Sites List
-    private ArrayList<Site> sitesArrayList = new ArrayList<>();
-
+    // LatLng
+    private LatLng mLatLng;
+    // Progress dialog for the json request
+    private ProgressDialog progressDialog;
 
     /**
      * Dispatch onStart() to all fragments.  Ensure any created loaders are
@@ -79,14 +94,19 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton fab_add_new_site = (FloatingActionButton) findViewById(R.id.fab);
+        fab_add_new_site.hide();
+        //// TODO: 9/20/2015 Delete hide and add create new site fuction 
+        /*fab_add_new_site.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                DialogFragment newAreYouSureDialogFragment;
+                newAreYouSureDialogFragment = AreYouSureDialogFragment.newInstance("create");
+                newAreYouSureDialogFragment.show(getFragmentManager(), "AreYouSure DialogFragment");
+                Snackbar.make(view, "Create New Site", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
-        });
+        });*/
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -99,8 +119,10 @@ public class MainActivity extends AppCompatActivity
 
         if (CheckServices.checkPlayServices(this)) {
             if (mGoogleApiClient == null) {
+                progressDialog = new ProgressDialog(this);
+                progressDialog.setMessage("Loading map and sites list. Please wait...");
+                progressDialog.setCancelable(false);
                 buildGoogleApiClient();
-                mGoogleApiClient.connect();
             }
         } else finish();
 
@@ -116,14 +138,13 @@ public class MainActivity extends AppCompatActivity
         if (mMap == null) {
             if (isGoogleMapsInstalled()) {
                 // Try to obtain the map from the SupportMapFragment.
-                mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map))
+                mMap = ((MapFragment) getFragmentManager()
+                        .findFragmentById(R.id.map))
                         .getMap();
                 if (mMap != null) {
                     setUpMap();
                 }
             } else {
-
-
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setMessage("Install Google Maps");
                 builder.setCancelable(false);
@@ -172,6 +193,7 @@ public class MainActivity extends AppCompatActivity
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
+        new DummySiteList();
 
         mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
 
@@ -185,6 +207,10 @@ public class MainActivity extends AppCompatActivity
                 mCameraPosition = cameraPosition;
             }
         });
+
+        setInfoWindows();
+        setOnMapClickListener();
+
     }
 
     @Override
@@ -214,6 +240,8 @@ public class MainActivity extends AppCompatActivity
         //noinspection SimplifiableIfStatement
         switch (id){
             case R.id.action_settings:
+                startActivity(
+                        new Intent(this, SettingsActivity.class));
                 break;
             default:
         }
@@ -225,24 +253,23 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        Intent intent = null;
-
         switch (id){
             case R.id.nav_map:
                 break;
             case R.id.nav_sites_list:
-                intent = new Intent(this, SitesListActivity.class);
-                startActivity(intent);
+                startActivity(
+                        new Intent(this, SitesListActivity.class));
                 break;
             case R.id.nav_add_site:
+                //// TODO: 9/20/2015 add fuctionality
                 break;
             case R.id.nav_settings:
-                intent = new Intent(this, SettingsActivity.class);
-                startActivity(intent);
+                startActivity(
+                        new Intent(this, SettingsActivity.class));
                 break;
             case R.id.nav_about:
-                intent = new Intent(this, AboutActivity.class);
-                startActivity(intent);
+                startActivity(
+                        new Intent(this, AboutActivity.class));
                 break;
             default:
         }
@@ -255,6 +282,9 @@ public class MainActivity extends AppCompatActivity
      * Builds Google Api Client to {@link #mGoogleApiClient).
      */
     protected synchronized void buildGoogleApiClient() {
+
+        showProgressDialog();
+
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(LocationServices.API)
                 .addConnectionCallbacks(this)
@@ -270,9 +300,11 @@ public class MainActivity extends AppCompatActivity
      */
     @Override
     public void onConnected(Bundle connectionHint) {
-        Location mLastLocation =
+        mLastLocation =
                 LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (mLastLocation != null) centerMapOnLocation(mLastLocation);
+        hideProgressDialog();
+        displayChanges();
     }
 
     @Override
@@ -282,7 +314,10 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-
+        Toast.makeText(getApplicationContext(),
+                "Could not connect to server",
+                Toast.LENGTH_LONG).show();
+        hideProgressDialog();
     }
 
     /**
@@ -291,5 +326,226 @@ public class MainActivity extends AppCompatActivity
     private void centerMapOnLocation(Location location) {
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
                 new LatLng(location.getLatitude(), location.getLongitude()), 13));
+    }
+
+    private void centerMapOnLastCamera() {
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                mCameraPosition.target, mCameraPosition.zoom));
+    }
+
+    private void showProgressDialog() {
+        if (!progressDialog.isShowing())
+            progressDialog.show();
+    }
+
+    private void hideProgressDialog() {
+        if (progressDialog.isShowing())
+            progressDialog.dismiss();
+    }
+
+    private void setInfoWindows() {
+
+        mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+            public View getInfoWindow(Marker arg0) {
+
+                View view = getLayoutInflater().inflate(R.layout.custom_infowindow, null);
+                RelativeLayout infoWindow = (RelativeLayout) view.findViewById(R.id.custom_infoWindow);
+                TextView siteName = (TextView) view.findViewById(R.id.siteName_editText);
+                TextView siteCoordinates = (TextView) view.findViewById(R.id.siteCoordinates_textView);
+                TextView siteHeight = (TextView) view.findViewById(R.id.siteHeight_textView);
+                TextView alphaAzimuth = (TextView) view.findViewById(R.id.alphaAzimuth_textView);
+                TextView alphaTilt = (TextView) view.findViewById(R.id.alphaTilt_textView);
+                TextView betaAzimuth = (TextView) view.findViewById(R.id.betaAzimuth_textView);
+                TextView betaTilt = (TextView) view.findViewById(R.id.betaTilt_textView);
+                TextView gammaAzimuth = (TextView) view.findViewById(R.id.gammaAzimuth_textView);
+                TextView gammaTilt = (TextView) view.findViewById(R.id.gammaTilt_textView);
+
+                for (Site site : DummySiteList.mSitesArrayList) {
+                    if (site.getName().equals(arg0.getTitle())) {
+
+                        siteName.setText(site.getName());
+                        siteCoordinates.setText("( " + site.getPosition().latitude
+                                + ", " + site.getPosition().longitude + " )");
+
+                        siteHeight.setText(site.getHeight() * 1000 + " mts");
+                        alphaAzimuth.setText("Azimuth: " + site.getAlpha().getAzimuth());
+                        alphaTilt.setText("Tilt: " + site.getAlpha().getTilt());
+                        betaAzimuth.setText("Azimuth: " + site.getBeta().getAzimuth());
+                        betaTilt.setText("Tilt: " + site.getBeta().getTilt());
+                        gammaAzimuth.setText("Azimuth: " + site.getGamma().getAzimuth());
+                        gammaTilt.setText("Tilt: " + site.getGamma().getTilt());
+
+                        if (site.getStatus()) {
+                            infoWindow.setBackgroundResource(R.color.tutorial_add_new_site);
+                        } else infoWindow.setBackgroundResource(R.color.tutorial_delete_site);
+
+                        break;
+                    }
+                }
+                return view;
+            }
+
+            public View getInfoContents(Marker arg0) {
+                return null;
+            }
+        });
+
+        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(Marker marker) {
+
+                for (Site site : DummySiteList.mSitesArrayList) {
+                    if (site.getName().equals(marker.getTitle())) {
+
+                        mSite = site;
+
+                        DialogFragment newDialogFragment = EditSiteDialogFragment
+                                .newInstance(site.getPosition().latitude, site.getPosition().longitude, "edit");
+                        newDialogFragment.show(getFragmentManager(), "Edit DialogFragment");
+                        break;
+                    }
+                }
+            }
+        });
+    }
+
+    private void setOnMapClickListener() {
+
+        mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+
+            @Override
+            public void onMapLongClick(LatLng latLng) {
+                boolean siteFound = false;
+                DialogFragment newAreYouSureDialogFragment = null;
+
+                for (Site site : DummySiteList.mSitesArrayList) {
+                    if (Math.abs(site.getPosition().latitude - latLng.latitude) < 0.001
+                            && Math.abs(site.getPosition().longitude - latLng.longitude) < 0.001) {
+                        siteFound = true;
+
+                        mSite = site;
+                        newAreYouSureDialogFragment = AreYouSureDialogFragment.newInstance("delete");
+                        break;
+                    }
+                }
+
+                if (!siteFound) {
+
+                    newAreYouSureDialogFragment = AreYouSureDialogFragment.newInstance("create");
+                    mLatLng = new LatLng(latLng.latitude, latLng.longitude);
+                }
+                newAreYouSureDialogFragment.show(getFragmentManager(), "AreYouSure DialogFragment");
+            }
+        });
+
+    }
+
+    /**
+     * This method is triggered after user clicks on Yes button from the add/delete dialog
+     * box, receives a @param action which contains a string with the action to be performed.
+     */
+    @Override
+    public void onAcceptButtonClicked(String action) {
+
+        switch (action) {
+
+            case "create":
+                // creates a new blank site to be edited and added to list.
+                mSite = new Site();
+
+                // opens dialog fragment for user interface
+                DialogFragment newDialogFragment = EditSiteDialogFragment
+                        .newInstance(mLatLng.latitude, mLatLng.longitude, action);
+                newDialogFragment.show(getFragmentManager(), "Create DialogFragment");
+                break;
+
+            case "delete":
+                // deletes selected site after confirmation.
+                deleteSite(mSite.getName());
+                break;
+        }
+    }
+
+    /**
+     * This method is triggered after user clicks on Save button from the create/edit dialog
+     * fragment, receives a @param action which contains a string with the action to be performed.
+     */
+    @Override
+    public void onSaveButtonClicked(String action) {
+
+        switch (action) {
+
+            case "create":
+                DummySiteList.mSitesArrayList.add(mSite);
+                mSite = null;
+                break;
+
+            case "edit":
+                break;
+        }
+        displayChanges();
+    }
+
+    //Custom Methods
+    //----------------------------------------------------------------------------------------------
+
+    public void drawSiteList() {
+        for (Site site : DummySiteList.mSitesArrayList) {
+            drawSite(site);
+        }
+    }
+
+    /**
+     * Draws a single site includding all tree sectors
+     */
+    public void drawSite(Site site) {
+
+        BitmapDescriptor image = BitmapDescriptorFactory.fromResource(R.mipmap.antenna_off);
+
+        if (site.getStatus()) {
+            image = BitmapDescriptorFactory.fromResource(R.mipmap.antenna_on);
+
+            mMap.addPolygon(new PolygonOptions()
+                    .add(site.getPosition(), site.getAlpha().getP1(), site.getAlpha().getP2())
+                    .strokeColor(Color.YELLOW)
+                    .strokeWidth(1)
+                    .fillColor(Color.argb(90, 255, 255, 0)));
+
+            mMap.addPolygon(new PolygonOptions()
+                    .add(site.getPosition(), site.getBeta().getP1(), site.getBeta().getP2())
+                    .strokeColor(Color.YELLOW)
+                    .strokeWidth(1)
+                    .fillColor(Color.argb(90, 255, 255, 0)));
+
+            mMap.addPolygon(new PolygonOptions()
+                    .add(site.getPosition(), site.getGamma().getP1(), site.getGamma().getP2())
+                    .strokeColor(Color.YELLOW)
+                    .strokeWidth(1)
+                    .fillColor(Color.argb(90, 255, 255, 0)));
+        }
+
+        mMap.addMarker(new MarkerOptions()
+                .position(site.getPosition())
+                .title(site.getName())
+                .snippet(site.toString())
+                .draggable(false)
+                .anchor(0.5f, 0.5f)
+                .icon(image));
+    }
+
+    public void deleteSite(String siteName) {
+
+        for (Site site : DummySiteList.mSitesArrayList) {
+            if (site.getName().equals(siteName)) {
+                DummySiteList.mSitesArrayList.remove(site);
+                break;
+            }
+        }
+        displayChanges();
+    }
+
+    public void displayChanges() {
+        mMap.clear();
+        drawSiteList();
     }
 }
