@@ -225,21 +225,26 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
+        Intent intent = null;
+
         switch (id){
             case R.id.nav_map:
                 break;
             case R.id.nav_sites_list:
+                intent = new Intent(this, SitesListActivity.class);
+                startActivity(intent);
                 break;
             case R.id.nav_add_site:
                 break;
             case R.id.nav_settings:
+                intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
                 break;
             case R.id.nav_about:
-                Intent intent = new Intent(this, AboutActivity.class);
+                intent = new Intent(this, AboutActivity.class);
                 startActivity(intent);
                 break;
             default:
-
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
