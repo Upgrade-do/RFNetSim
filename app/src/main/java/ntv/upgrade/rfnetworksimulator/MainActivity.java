@@ -226,17 +226,17 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         switch (id){
-            case R.id.nav_camara:
+            case R.id.nav_map:
                 break;
-            case R.id.nav_gallery:
+            case R.id.nav_sites_list:
                 break;
-            case R.id.nav_slideshow:
+            case R.id.nav_add_site:
                 break;
-            case R.id.nav_manage:
+            case R.id.nav_settings:
                 break;
-            case R.id.nav_share:
-                break;
-            case R.id.nav_send:
+            case R.id.nav_about:
+                Intent intent = new Intent(this, AboutActivity.class);
+                startActivity(intent);
                 break;
             default:
 
