@@ -11,7 +11,7 @@ import ntv.upgrade.rfnetworksimulator.site.Site;
  */
 public class DummySiteList {
     // Sites List
-    public static ArrayList<Site> mSitesArrayList = new ArrayList<>();
+    public static final ArrayList<Site> mSitesArrayList = new ArrayList<>();
 
     public DummySiteList() {
         createSitesList();
