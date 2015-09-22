@@ -7,9 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Switch;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -73,8 +73,8 @@ public class EditSiteDialogFragment extends DialogFragment {
         final EditText betaTilt = (EditText) rootView.findViewById(R.id.betaTilt_Create);
         final EditText gammaAzimuth = (EditText) rootView.findViewById(R.id.gammaAzimuth_Create);
         final EditText gammaTilt = (EditText) rootView.findViewById(R.id.gammaTilt_Create);
-        Button saveChanges = (Button) rootView.findViewById(R.id.saveChanges_Create);
-        Button cancelChanges = (Button) rootView.findViewById(R.id.cancelChanges_Create);
+        ImageButton saveChanges = (ImageButton) rootView.findViewById(R.id.saveChanges_Create);
+        ImageButton cancelChanges = (ImageButton) rootView.findViewById(R.id.cancelChanges_Create);
 
         latitude.setText(mLat.toString());
         longitude.setText(mLng.toString());

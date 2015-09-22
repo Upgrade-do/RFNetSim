@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 /**
@@ -47,8 +47,8 @@ public class AreYouSureDialogFragment extends DialogFragment {
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
 
         final TextView doYouWannaTextView = (TextView) rootView.findViewById(R.id.doYouWannaTextView);
-        Button acceptButton = (Button) rootView.findViewById(R.id.acceptButton);
-        Button declineButton = (Button) rootView.findViewById(R.id.declineButton);
+        ImageButton acceptButton = (ImageButton) rootView.findViewById(R.id.acceptButton);
+        ImageButton declineButton = (ImageButton) rootView.findViewById(R.id.declineButton);
 
         if (mAction.equals("create")) {
             doYouWannaTextView.setText("Do you want to create a new site here ?");
