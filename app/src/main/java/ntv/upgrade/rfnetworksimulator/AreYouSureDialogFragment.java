@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -44,15 +43,20 @@ public class AreYouSureDialogFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.do_you_wanna, container, false);
-        getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
 
-        final TextView doYouWannaTextView = (TextView) rootView.findViewById(R.id.doYouWannaTextView);
+        TextView title = (TextView) getDialog().findViewById(android.R.id.title);
+        title.setTextColor(getResources().getColor(R.color.colorPrimary));
+        TextView doYouWannaTextView = (TextView) rootView.findViewById(R.id.doYouWannaTextView);
         ImageButton acceptButton = (ImageButton) rootView.findViewById(R.id.acceptButton);
         ImageButton declineButton = (ImageButton) rootView.findViewById(R.id.declineButton);
 
         if (mAction.equals("create")) {
+            getDialog().setTitle("Create new Site");
             doYouWannaTextView.setText("Do you want to create a new site here ?");
-        } else doYouWannaTextView.setText("Are you sure you want to delete this site ?");
+        } else {
+            getDialog().setTitle("Delete Site");
+            doYouWannaTextView.setText("Are you sure you want to delete this site ?");
+        }
 
         acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override

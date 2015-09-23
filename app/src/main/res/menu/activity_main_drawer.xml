@@ -16,7 +16,7 @@
             android:title="Add New Site" />
     </group>
 
-    <item android:title="Communicate">
+    <item android:title="Control">
         <menu>
             <item
                 android:id="@+id/nav_settings"
@@ -28,5 +28,4 @@
                 android:title="About" />
         </menu>
     </item>
-
 </menu>

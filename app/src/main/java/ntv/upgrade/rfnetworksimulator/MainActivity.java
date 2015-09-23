@@ -20,7 +20,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -349,7 +348,6 @@ public class MainActivity extends AppCompatActivity
             public View getInfoWindow(Marker arg0) {
 
                 View view = getLayoutInflater().inflate(R.layout.custom_infowindow, null);
-                RelativeLayout infoWindow = (RelativeLayout) view.findViewById(R.id.custom_infoWindow);
                 TextView siteName = (TextView) view.findViewById(R.id.siteName_editText);
                 TextView siteCoordinates = (TextView) view.findViewById(R.id.siteCoordinates_textView);
                 TextView siteHeight = (TextView) view.findViewById(R.id.siteHeight_textView);
@@ -368,16 +366,18 @@ public class MainActivity extends AppCompatActivity
                                 + ", " + site.getPosition().longitude + " )");
 
                         siteHeight.setText(site.getHeight() * 1000 + " mts");
-                        alphaAzimuth.setText("Azimuth: " + site.getAlpha().getAzimuth());
-                        alphaTilt.setText("Tilt: " + site.getAlpha().getTilt());
-                        betaAzimuth.setText("Azimuth: " + site.getBeta().getAzimuth());
-                        betaTilt.setText("Tilt: " + site.getBeta().getTilt());
-                        gammaAzimuth.setText("Azimuth: " + site.getGamma().getAzimuth());
-                        gammaTilt.setText("Tilt: " + site.getGamma().getTilt());
+
+                        alphaAzimuth.setText(String.format("%d", site.getAlpha().getAzimuth()));
+                        betaAzimuth.setText(String.format("%d", site.getBeta().getAzimuth()));
+                        gammaAzimuth.setText(String.format("%d", site.getGamma().getAzimuth()));
+
+                        alphaTilt.setText(String.format("%.1f", site.getAlpha().getTilt()));
+                        betaTilt.setText(String.format("%.1f", site.getBeta().getTilt()));
+                        gammaTilt.setText(String.format("%.1f", site.getGamma().getTilt()));
 
                         if (site.getStatus()) {
-                            infoWindow.setBackgroundResource(R.color.tutorial_add_new_site);
-                        } else infoWindow.setBackgroundResource(R.color.tutorial_delete_site);
+                            siteName.setBackgroundResource(R.color.tutorial_edit_site);
+                        } else siteName.setBackgroundResource(R.color.tutorial_delete_site);
 
                         break;
                     }

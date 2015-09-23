@@ -60,7 +60,6 @@ public class EditSiteDialogFragment extends DialogFragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.edit_site, container, false);
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-        getDialog().getWindow().setBackgroundDrawableResource(R.color.tutorial_delete_site);
 
         final EditText siteName = (EditText) rootView.findViewById(R.id.siteName_Create);
         final Switch status = (Switch) rootView.findViewById(R.id.status_Create);
@@ -76,6 +75,8 @@ public class EditSiteDialogFragment extends DialogFragment {
         ImageButton saveChanges = (ImageButton) rootView.findViewById(R.id.saveChanges_Create);
         ImageButton cancelChanges = (ImageButton) rootView.findViewById(R.id.cancelChanges_Create);
 
+        siteName.setBackgroundResource(R.color.tutorial_delete_site);
+
         latitude.setText(mLat.toString());
         longitude.setText(mLng.toString());
 
@@ -83,9 +84,9 @@ public class EditSiteDialogFragment extends DialogFragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    getDialog().getWindow().setBackgroundDrawableResource(R.color.tutorial_add_new_site);
+                    siteName.setBackgroundResource(R.color.tutorial_edit_site);
                 } else
-                    getDialog().getWindow().setBackgroundDrawableResource(R.color.tutorial_delete_site);
+                    siteName.setBackgroundResource(R.color.tutorial_delete_site);
             }
         });
 
