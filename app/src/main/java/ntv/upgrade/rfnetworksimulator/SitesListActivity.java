@@ -6,15 +6,15 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.ArrayAdapter;
+import android.widget.GridView;
 import android.widget.ListView;
 
-import ntv.upgrade.rfnetworksimulator.dummy.DummySiteList;
-import ntv.upgrade.rfnetworksimulator.site.Site;
+import ntv.upgrade.rfnetworksimulator.dummy.ListAdapter;
 
 public class SitesListActivity extends AppCompatActivity {
 
-    private ArrayAdapter<Site> mSitesListAdapter;
+    private ListAdapter mSitesListAdapter;
+    private Boolean mLargeScreen;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,16 +33,17 @@ public class SitesListActivity extends AppCompatActivity {
         });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        mSitesListAdapter =
-                new ArrayAdapter<Site>(
-                        this, // The current context (this activity)
-                        R.layout.list_item_site, // The name of the layout ID.
-                        R.id.textView_Site_Name, // The ID of the textview to populate.
-                        DummySiteList.mSitesArrayList);
+        mSitesListAdapter = new ListAdapter(this, R.layout.list_item_site, MainActivity.mSitesArrayList);
 
 
-        ListView listView = (ListView) this.findViewById(R.id.listview_sites_list);
-        listView.setAdapter(mSitesListAdapter);
+        if (this.findViewById(R.id.listview_sites_list) != null) {
+            ListView sitesListView = (ListView) this.findViewById(R.id.listview_sites_list);
+            sitesListView.setAdapter(mSitesListAdapter);
+        } else {
+            GridView sitesGridView = (GridView) this.findViewById(R.id.gridview_sites_list);
+            sitesGridView.setAdapter(mSitesListAdapter);
+        }
+
     }
 
 

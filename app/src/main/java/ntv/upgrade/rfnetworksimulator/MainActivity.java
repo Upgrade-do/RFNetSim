@@ -38,15 +38,19 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolygonOptions;
 
-import ntv.upgrade.rfnetworksimulator.dummy.DummySiteList;
+import java.util.ArrayList;
+
 import ntv.upgrade.rfnetworksimulator.site.Site;
 import ntv.upgrade.rfnetworksimulator.tools.CheckServices;
+import ntv.upgrade.rfnetworksimulator.tools.Preferences;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
         EditSiteDialogFragment.OnFragmentInteractionListener,
         AreYouSureDialogFragment.OnFragmentInteractionListener {
+
+    protected static ArrayList<Site> mSitesArrayList;
 
     // Site used to handle a single site
     protected static Site mSite;
@@ -78,6 +82,8 @@ public class MainActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         setUpMapIfNeeded();
+        if (mSitesArrayList == null)
+            mSitesArrayList = createDummySitesList();
     }
 
     @Override
@@ -93,19 +99,16 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+
         FloatingActionButton fab_add_new_site = (FloatingActionButton) findViewById(R.id.fab);
-        fab_add_new_site.hide();
-        //// TODO: 9/20/2015 Delete hide and add create new site fuction 
-        /*fab_add_new_site.setOnClickListener(new View.OnClickListener() {
+        fab_add_new_site.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 DialogFragment newAreYouSureDialogFragment;
                 newAreYouSureDialogFragment = AreYouSureDialogFragment.newInstance("create");
                 newAreYouSureDialogFragment.show(getFragmentManager(), "AreYouSure DialogFragment");
-                Snackbar.make(view, "Create New Site", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
             }
-        });*/
+        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -192,12 +195,12 @@ public class MainActivity extends AppCompatActivity
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
-        new DummySiteList();
 
-        mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+        mMap.setMapType(
+                Integer.parseInt(
+                        Preferences.getPreferredMapStyle(this)));
 
         mMap.setMyLocationEnabled(true);
-        mMap.setIndoorEnabled(false);
         mMap.getUiSettings().setZoomControlsEnabled(true);
 
         mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
@@ -260,7 +263,10 @@ public class MainActivity extends AppCompatActivity
                         new Intent(this, SitesListActivity.class));
                 break;
             case R.id.nav_add_site:
-                //// TODO: 9/20/2015 add fuctionality
+                DialogFragment newAreYouSureDialogFragment;
+                newAreYouSureDialogFragment = AreYouSureDialogFragment.newInstance("create");
+                newAreYouSureDialogFragment.show(getFragmentManager(), "AreYouSure DialogFragment");
+                ;
                 break;
             case R.id.nav_settings:
                 startActivity(
@@ -358,7 +364,7 @@ public class MainActivity extends AppCompatActivity
                 TextView gammaAzimuth = (TextView) view.findViewById(R.id.gammaAzimuth_textView);
                 TextView gammaTilt = (TextView) view.findViewById(R.id.gammaTilt_textView);
 
-                for (Site site : DummySiteList.mSitesArrayList) {
+                for (Site site : mSitesArrayList) {
                     if (site.getName().equals(arg0.getTitle())) {
 
                         siteName.setText(site.getName());
@@ -394,7 +400,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onInfoWindowClick(Marker marker) {
 
-                for (Site site : DummySiteList.mSitesArrayList) {
+                for (Site site : mSitesArrayList) {
                     if (site.getName().equals(marker.getTitle())) {
 
                         mSite = site;
@@ -418,7 +424,7 @@ public class MainActivity extends AppCompatActivity
                 boolean siteFound = false;
                 DialogFragment newAreYouSureDialogFragment = null;
 
-                for (Site site : DummySiteList.mSitesArrayList) {
+                for (Site site : mSitesArrayList) {
                     if (Math.abs(site.getPosition().latitude - latLng.latitude) < 0.001
                             && Math.abs(site.getPosition().longitude - latLng.longitude) < 0.001) {
                         siteFound = true;
@@ -452,10 +458,15 @@ public class MainActivity extends AppCompatActivity
             case "create":
                 // creates a new blank site to be edited and added to list.
                 mSite = new Site();
-
-                // opens dialog fragment for user interface
-                DialogFragment newDialogFragment = EditSiteDialogFragment
-                        .newInstance(mLatLng.latitude, mLatLng.longitude, action);
+                DialogFragment newDialogFragment;
+                if (mLatLng == null) {
+                    newDialogFragment = EditSiteDialogFragment
+                            .newInstance(mLastLocation.getLatitude(), mLastLocation.getLongitude(), action);
+                } else {
+                    // opens dialog fragment for user interface
+                    newDialogFragment = EditSiteDialogFragment
+                            .newInstance(mLatLng.latitude, mLatLng.longitude, action);
+                }
                 newDialogFragment.show(getFragmentManager(), "Create DialogFragment");
                 break;
 
@@ -476,7 +487,24 @@ public class MainActivity extends AppCompatActivity
         switch (action) {
 
             case "create":
-                DummySiteList.mSitesArrayList.add(mSite);
+                boolean siteFound = false;
+
+                for (Site site : mSitesArrayList) {
+                    if (Math.abs(site.getPosition().latitude - mSite.getPosition().latitude) < 0.01
+                            && Math.abs(site.getPosition().longitude - mSite.getPosition().longitude) < 0.01) {
+                        siteFound = true;
+
+                        Toast.makeText(this,
+                                String.format(
+                                        "Ups!... A site already exists at coordinates: (%.4f, %.4f)",
+                                        mSite.getPosition().latitude, mSite.getPosition().longitude),
+                                Toast.LENGTH_LONG)
+                                .show();
+                    }
+                }
+                if (!siteFound) {
+                    mSitesArrayList.add(mSite);
+                }
                 mSite = null;
                 break;
 
@@ -490,7 +518,7 @@ public class MainActivity extends AppCompatActivity
     //----------------------------------------------------------------------------------------------
 
     public void drawSiteList() {
-        for (Site site : DummySiteList.mSitesArrayList) {
+        for (Site site : mSitesArrayList) {
             drawSite(site);
         }
     }
@@ -535,9 +563,9 @@ public class MainActivity extends AppCompatActivity
 
     public void deleteSite(String siteName) {
 
-        for (Site site : DummySiteList.mSitesArrayList) {
+        for (Site site : mSitesArrayList) {
             if (site.getName().equals(siteName)) {
-                DummySiteList.mSitesArrayList.remove(site);
+                mSitesArrayList.remove(site);
                 break;
             }
         }
@@ -547,5 +575,36 @@ public class MainActivity extends AppCompatActivity
     public void displayChanges() {
         mMap.clear();
         drawSiteList();
+    }
+
+
+    private ArrayList<Site> createDummySitesList() {
+
+        ArrayList<Site> siteList = new ArrayList<>();
+
+        if (Preferences.getPreferenceDummyData(this)) {
+            int i = 1;
+            siteList.add(new Site(i++,
+                    "30 de Marzo", new LatLng(18.474259, -69.895146), 39.6240, true, 345, 1.0, 160, 5.0, 240, 2.0));
+            siteList.add(new Site(i++,
+                    "ARS Palic", new LatLng(18.47458, -69.9162), 33.5280, true, 350, 3.5, 110, 3.5, 220, 3.5));
+            siteList.add(new Site(i++,
+                    "Gazcue", new LatLng(18.468358, -69.90468), 30.4800, false, 0, 2.0, 120, 5.0, 225, 4.0));
+            siteList.add(new Site(i++,
+                    "Gazcue2", new LatLng(18.4597, -69.9125), 16.7640, true, 0, 3.0, 120, 3.0, 240, 3.0));
+            siteList.add(new Site(i++,
+                    "Melia", new LatLng(18.463427, -69.898148), 42.6379, true, 340, 0.0, 50, 1.0, 260, 1.0));
+            siteList.add(new Site(i++,
+                    "UNIBE", new LatLng(18.475055, -69.9094), 42.6720, true, 40, 3.0, 150, 4.0, 270, 4.0));
+            siteList.add(new Site(i++,
+                    "UTESA", new LatLng(18.466756, -69.91167), 42.6720, true, 60, 2.0, 140, 3.0, 270, 1.0));
+            siteList.add(new Site(i++,
+                    "Villa Francisca", new LatLng(18.480037, -69.88862), 30.4800, false, 15, 4.0, 120, 4.0, 240, 4.0));
+            siteList.add(new Site(i++,
+                    "Villa-Juana", new LatLng(18.4831, -69.9056), 39.6240, false, 0, 9.0, 120, 9.0, 240, 9.0));
+            siteList.add(new Site(i++,
+                    "Zona Colonial", new LatLng(18.475539, -69.884344), 21.3400, true, 340, 7.0, 150, 6.0, 270, 7.0));
+        }
+        return siteList;
     }
 }

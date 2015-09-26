@@ -46,6 +46,7 @@ public class AreYouSureDialogFragment extends DialogFragment {
 
         TextView title = (TextView) getDialog().findViewById(android.R.id.title);
         title.setTextColor(getResources().getColor(R.color.colorPrimary));
+
         TextView doYouWannaTextView = (TextView) rootView.findViewById(R.id.doYouWannaTextView);
         ImageButton acceptButton = (ImageButton) rootView.findViewById(R.id.acceptButton);
         ImageButton declineButton = (ImageButton) rootView.findViewById(R.id.declineButton);
