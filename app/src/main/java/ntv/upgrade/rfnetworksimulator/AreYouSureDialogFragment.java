@@ -3,6 +3,7 @@ package ntv.upgrade.rfnetworksimulator;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,10 +11,12 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 /**
+ *
  * Created by Paulino on 9/20/2015.
  */
 public class AreYouSureDialogFragment extends DialogFragment {
 
+    // TODO: 9/27/2015 comment this class
     private static final String ARG_ACTION_REQUEST = "create/delete";
 
     private String mAction;
@@ -45,7 +48,7 @@ public class AreYouSureDialogFragment extends DialogFragment {
         View rootView = inflater.inflate(R.layout.do_you_wanna, container, false);
 
         TextView title = (TextView) getDialog().findViewById(android.R.id.title);
-        title.setTextColor(getResources().getColor(R.color.colorPrimary));
+        title.setTextColor(ContextCompat.getColor(getActivity(), R.color.colorPrimary));
 
         TextView doYouWannaTextView = (TextView) rootView.findViewById(R.id.doYouWannaTextView);
         ImageButton acceptButton = (ImageButton) rootView.findViewById(R.id.acceptButton);

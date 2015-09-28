@@ -55,10 +55,10 @@ public class ListAdapter extends ArrayAdapter<Site> {
                 siteName.setText(site.getName());
             }
             if (latLng != null) {
-                latLng.setText(String.format("(%.4f, %.4f)", site.getPosition().latitude, site.getPosition().longitude));
+                latLng.setText(String.format("(%.6f, %.6f)", site.getGeo().latitude, site.getGeo().longitude));
             }
             if (heigh != null) {
-                heigh.setText(String.format("Heigh: %.2f mts", site.getHeight() * 1000));
+                heigh.setText(String.format("Heigh: %.2f mts", site.getHeight()));
             }
             if (alphaAzimuth != null) {
                 alphaAzimuth.setText(String.format("%d", site.getAlpha().getAzimuth()));

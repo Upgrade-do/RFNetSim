@@ -3,7 +3,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@android:color/white"
-    android:minWidth="250dp"
+    android:minWidth="280dp"
     android:orientation="vertical">
 
     <TextView
@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:padding="4dp"
         android:text="Site Name"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@android:color/white"
@@ -139,7 +140,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="Tilt:"
+                android:text="Tilt (m+e):"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textStyle="bold" />
 
@@ -149,7 +150,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="2"
+                android:text="4"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <TextView
@@ -158,7 +159,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="2"
+                android:text="4"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <TextView
@@ -167,7 +168,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="2"
+                android:text="4"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
         </LinearLayout>

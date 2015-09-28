@@ -14,30 +14,29 @@ import android.widget.Switch;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import ntv.upgrade.rfnetworksimulator.site.Sector;
 import ntv.upgrade.rfnetworksimulator.site.Site;
-import ntv.upgrade.rfnetworksimulator.tools.MathTools;
 
 /**
+ *
  * Created by Paulino on 9/20/2015.
  */
 public class EditSiteDialogFragment extends DialogFragment {
 
-    private static final String ARG_SITE_LAT = "latitude";
-    private static final String ARG_SITE_LNG = "longitude";
     private static final String ARG_ACTION_REQUEST = "edit/create";
-
-    private Double mLat, mLng;
+    EditText siteName, latitude, longitude, height,
+            alphaAzimuth, betaAzimuth, gammaAzimuth,
+            alphaTilt, betaTilt, gammaTilt;
+    Switch isOperational;
     private String mAction;
-    private Site mSite = MainActivity.mSite;
-
+    private Site tempSite = null;
+    private LatLng tempGeolocation = null;
     private OnFragmentInteractionListener mListener;
 
-    public static EditSiteDialogFragment newInstance(Double lat, Double lng, String action) {
+    public static EditSiteDialogFragment newInstance(String actionRequest) {
         EditSiteDialogFragment fragment = new EditSiteDialogFragment();
         Bundle args = new Bundle();
-        args.putDouble(ARG_SITE_LAT, lat);
-        args.putDouble(ARG_SITE_LNG, lng);
-        args.putString(ARG_ACTION_REQUEST, action);
+        args.putString(ARG_ACTION_REQUEST, actionRequest);
         fragment.setArguments(args);
 
         return fragment;
@@ -49,8 +48,6 @@ public class EditSiteDialogFragment extends DialogFragment {
 
         if (getArguments() != null) {
             mAction = getArguments().getString(ARG_ACTION_REQUEST);
-            mLat = MathTools.round(getArguments().getDouble(ARG_SITE_LAT), 6);
-            mLng = MathTools.round(getArguments().getDouble(ARG_SITE_LNG), 6);
         }
         mListener = (OnFragmentInteractionListener) getActivity();
     }
@@ -58,29 +55,29 @@ public class EditSiteDialogFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.edit_site, container, false);
+        View rootView = inflater.inflate(R.layout.dialog_fragment_edit_site, container, false);
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
 
-        final EditText siteName = (EditText) rootView.findViewById(R.id.siteName_Create);
-        final Switch status = (Switch) rootView.findViewById(R.id.status_Create);
-        final EditText latitude = (EditText) rootView.findViewById(R.id.siteLatitude_Create);
-        final EditText longitude = (EditText) rootView.findViewById(R.id.siteLongitude_Create);
-        final EditText height = (EditText) rootView.findViewById(R.id.siteHeight_Create);
-        final EditText alphaAzimuth = (EditText) rootView.findViewById(R.id.alphaAzimuth_Create);
-        final EditText alphaTilt = (EditText) rootView.findViewById(R.id.alphaTilt_Create);
-        final EditText betaAzimuth = (EditText) rootView.findViewById(R.id.betaAzimuth_Create);
-        final EditText betaTilt = (EditText) rootView.findViewById(R.id.betaTilt_Create);
-        final EditText gammaAzimuth = (EditText) rootView.findViewById(R.id.gammaAzimuth_Create);
-        final EditText gammaTilt = (EditText) rootView.findViewById(R.id.gammaTilt_Create);
+
+        siteName = (EditText) rootView.findViewById(R.id.siteName_Create);
+        isOperational = (Switch) rootView.findViewById(R.id.status_Create);
+
+        latitude = (EditText) rootView.findViewById(R.id.siteLatitude_Create);
+        longitude = (EditText) rootView.findViewById(R.id.siteLongitude_Create);
+        height = (EditText) rootView.findViewById(R.id.siteHeight_Create);
+
+        alphaAzimuth = (EditText) rootView.findViewById(R.id.alphaAzimuth_Create);
+        betaAzimuth = (EditText) rootView.findViewById(R.id.betaAzimuth_Create);
+        gammaAzimuth = (EditText) rootView.findViewById(R.id.gammaAzimuth_Create);
+
+        alphaTilt = (EditText) rootView.findViewById(R.id.alphaTilt_Create);
+        betaTilt = (EditText) rootView.findViewById(R.id.betaTilt_Create);
+        gammaTilt = (EditText) rootView.findViewById(R.id.gammaTilt_Create);
+
         ImageButton saveChanges = (ImageButton) rootView.findViewById(R.id.saveChanges_Create);
         ImageButton cancelChanges = (ImageButton) rootView.findViewById(R.id.cancelChanges_Create);
 
-        siteName.setBackgroundResource(R.color.tutorial_delete_site);
-
-        latitude.setText(mLat.toString());
-        longitude.setText(mLng.toString());
-
-        status.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        isOperational.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
@@ -90,36 +87,44 @@ public class EditSiteDialogFragment extends DialogFragment {
             }
         });
 
-        if (mAction.equals("edit")) {
-            siteName.setText(mSite.getName());
-            latitude.setText(Double.toString(mSite.getPosition().latitude));
-            longitude.setText(Double.toString(mSite.getPosition().longitude));
-            height.setText(Double.toString(MathTools.round(mSite.getHeight() * 1000, 4)));
-            status.setChecked(mSite.getStatus());
-            alphaAzimuth.setText(Integer.toString(mSite.getAlpha().getAzimuth()));
-            alphaTilt.setText(Double.toString(mSite.getAlpha().getTilt()));
-            betaAzimuth.setText(Integer.toString(mSite.getBeta().getAzimuth()));
-            betaTilt.setText(Double.toString(mSite.getBeta().getTilt()));
-            gammaAzimuth.setText(Integer.toString(mSite.getGamma().getAzimuth()));
-            gammaTilt.setText(Double.toString(mSite.getGamma().getTilt()));
-        }
+        loadDataToUi();
 
         saveChanges.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mSite.setName(siteName.getText().toString());
-                mSite.setStatus(status.isChecked());
-                mSite.setPosition(new LatLng(
-                        Double.parseDouble(latitude.getText().toString()),
-                        Double.parseDouble(longitude.getText().toString())));
-                mSite.setHeight(Double.parseDouble(height.getText().toString()) / 1000);
-                mSite.getAlpha().setAzimuth(Integer.parseInt(alphaAzimuth.getText().toString()));
-                mSite.getAlpha().setTilt(Double.parseDouble(alphaTilt.getText().toString()));
-                mSite.getBeta().setAzimuth(Integer.parseInt(betaAzimuth.getText().toString()));
-                mSite.getBeta().setTilt(Double.parseDouble(betaTilt.getText().toString()));
-                mSite.getGamma().setAzimuth(Integer.parseInt(gammaAzimuth.getText().toString()));
-                mSite.getGamma().setTilt(Double.parseDouble(gammaTilt.getText().toString()));
 
+                String tempName;
+                if (siteName.getText().toString().equals("")) {
+                    tempName = ("I have no name, i won't behave");
+                } else tempName = siteName.getText().toString();
+
+                LatLng tempGeo = new LatLng(
+                        Double.parseDouble(latitude.getText().toString()),
+                        Double.parseDouble(longitude.getText().toString()));
+                double tempHeight = Double.parseDouble(height.getText().toString());
+                boolean tempStatus = isOperational.isChecked();
+                Sector tempAlpha = new Sector(tempGeo,
+                        Integer.parseInt(alphaAzimuth.getText().toString()),
+                        Double.parseDouble(alphaTilt.getText().toString()),
+                        tempHeight);
+                Sector tempBeta = new Sector(tempGeo,
+                        Integer.parseInt(betaAzimuth.getText().toString()),
+                        Double.parseDouble(betaTilt.getText().toString()),
+                        tempHeight);
+                Sector tempGamma = new Sector(tempGeo,
+                        Integer.parseInt(gammaAzimuth.getText().toString()),
+                        Double.parseDouble(gammaTilt.getText().toString()),
+                        tempHeight);
+
+                tempSite = new Site(tempName, tempGeo, tempHeight, tempStatus, tempAlpha, tempBeta, tempGamma);
+
+                if (mAction.equals("edit")) {
+                    MainActivity.mSitesArrayList.remove(MainActivity.tempSite);
+                }
+
+                MainActivity.tempSite = tempSite;
+                tempGeolocation = null;
+                tempSite = null;
                 mListener.onSaveButtonClicked(mAction);
                 getDialog().dismiss();
             }
@@ -127,11 +132,47 @@ public class EditSiteDialogFragment extends DialogFragment {
         cancelChanges.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                tempGeolocation = null;
+                tempSite = null;
                 getDialog().dismiss();
             }
         });
 
         return rootView;
+    }
+
+    private boolean loadDataToUi() {
+        switch (mAction) {
+            case "create":
+                tempGeolocation = MainActivity.tempGeolocation;
+
+                latitude.setText(String.format("%.6f", tempGeolocation.latitude));
+                longitude.setText(String.format("%.6f", tempGeolocation.longitude));
+
+                tempSite = MainActivity.tempSite;
+                break;
+            case "edit":
+                tempSite = MainActivity.tempSite;
+
+                siteName.setText(tempSite.getName());
+                height.setText(String.format("%.2f", tempSite.getHeight()));
+                isOperational.setChecked(tempSite.isOperational());
+
+                latitude.setText(String.format("%.6f", tempSite.getGeo().latitude));
+                longitude.setText(String.format("%.6f", tempSite.getGeo().longitude));
+
+                alphaAzimuth.setText(String.format("%d", tempSite.getAlpha().getAzimuth()));
+                betaAzimuth.setText(String.format("%d", tempSite.getBeta().getAzimuth()));
+                gammaAzimuth.setText(String.format("%d", tempSite.getGamma().getAzimuth()));
+
+                alphaTilt.setText(String.format("%.1f", tempSite.getAlpha().getTilt()));
+                betaTilt.setText(String.format("%.1f", tempSite.getBeta().getTilt()));
+                gammaTilt.setText(String.format("%.1f", tempSite.getGamma().getTilt()));
+                break;
+            default:
+                return false;
+        }
+        return true;
     }
 
     @Override
