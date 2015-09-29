@@ -1,8 +1,4 @@
 <resources>
-    <!--
-    You can also add your credentials to an existing key, using this line:
-    A2:DB:CD:0B:8A:0F:F0:57:2D:CE:28:1B:32:52:FA:F8:E6:DE:28:B6;ntv.upgrade.rfnetworksimulator
-    -->
     <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">
         AIzaSyDpuenJJLqTD8gFJpNs51Hu1evbPqOpoAY
     </string>

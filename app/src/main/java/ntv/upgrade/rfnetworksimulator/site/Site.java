@@ -23,12 +23,6 @@ public class Site {
     private Sector gamma = null;
 
     /**
-     * Default constructor
-     */
-    public Site() {
-    }
-
-    /**
      * Constructor to set a new site
      */
     public Site(String name, LatLng geo, Double height, boolean isOperational,

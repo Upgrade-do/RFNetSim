@@ -56,11 +56,17 @@ public class AreYouSureDialogFragment extends DialogFragment {
 
         if (mAction.equals("create")) {
             getDialog().setTitle("Create new Site");
-            doYouWannaTextView.setText("Do you want to create a new site here ?");
+            doYouWannaTextView.setText(
+                    String.format(getResources().getString(R.string.creating_new_site),
+                            MainActivity.tempGeolocation.latitude,
+                            MainActivity.tempGeolocation.longitude));
         } else {
             getDialog().setTitle("Delete Site");
-            doYouWannaTextView.setText("Are you sure you want to delete this site ?");
+            doYouWannaTextView.setText(String.format(
+                    getResources().getString(R.string.deleting_site),
+                    MainActivity.tempSite.getName()));
         }
+        doYouWannaTextView.append(getResources().getString(R.string.confirm_action));
 
         acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -24,11 +24,14 @@ import ntv.upgrade.rfnetworksimulator.site.Site;
 public class EditSiteDialogFragment extends DialogFragment {
 
     private static final String ARG_ACTION_REQUEST = "edit/create";
+
     EditText siteName, latitude, longitude, height,
             alphaAzimuth, betaAzimuth, gammaAzimuth,
             alphaTilt, betaTilt, gammaTilt;
     Switch isOperational;
+
     private String mAction;
+
     private Site tempSite = null;
     private LatLng tempGeolocation = null;
 
@@ -96,7 +99,7 @@ public class EditSiteDialogFragment extends DialogFragment {
 
                 String tempName;
                 if (siteName.getText().toString().equals("")) {
-                    tempName = ("I have no name, i won't behave");
+                    tempName = (getResources().getString(R.string.site_with_no_name));
                 } else tempName = siteName.getText().toString();
 
                 LatLng tempGeo = new LatLng(

@@ -31,9 +31,6 @@ public class Sector {
     private double range = -1;
     private int azimuth;
 
-    public Sector() {
-    }
-
     /**
      * Constructor to set a new Sector
      */

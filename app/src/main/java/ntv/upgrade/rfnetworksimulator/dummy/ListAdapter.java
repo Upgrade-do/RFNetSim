@@ -53,12 +53,15 @@ public class ListAdapter extends ArrayAdapter<Site> {
 
             if (siteName != null) {
                 siteName.setText(site.getName());
+                if (site.isOperational()) {
+                    siteName.setBackgroundResource(R.color.colorGreen);
+                } else siteName.setBackgroundResource(R.color.colorRed);
             }
             if (latLng != null) {
                 latLng.setText(String.format("(%.6f, %.6f)", site.getGeo().latitude, site.getGeo().longitude));
             }
             if (heigh != null) {
-                heigh.setText(String.format("Heigh: %.2f mts", site.getHeight()));
+                heigh.setText(String.format("Height: %.2f mts", site.getHeight()));
             }
             if (alphaAzimuth != null) {
                 alphaAzimuth.setText(String.format("%d", site.getAlpha().getAzimuth()));
@@ -78,6 +81,7 @@ public class ListAdapter extends ArrayAdapter<Site> {
             if (gammaTilt != null) {
                 gammaTilt.setText(String.format("%.1f", site.getGamma().getTilt()));
             }
+
         }
         return v;
     }
