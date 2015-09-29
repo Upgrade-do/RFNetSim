@@ -1,28 +1,72 @@
 <resources>
-    <string name="app_name">RF NetSim</string>
 
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <!-- General strings (used throughout the entire app) -->
+    <string name="app_name" translatable="false">RF Network Simulator</string>
 
+    <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
+    <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
+
+    <string name="helper_site_name">Site Name</string>
+    <string name="helper_height">Height:</string>
+    <string name="helper_is_operational">Status</string>
+    <string name="helper_click_to_edit">Click here to edit site</string>
+    <string name="helper_geolocation" translatable="false">LatLng: </string>
+    <string name="helper_latitude" translatable="false">Lat:</string>
+    <string name="helper_longitude" translatable="false">Lng:</string>
+    <string name="helper_alpha" translatable="false">ALPHA</string>
+    <string name="helper_beta" translatable="false">BETA</string>
+    <string name="helper_gamma" translatable="false">GAMMA</string>
+    <string name="helper_azimuth" translatable="false">Azimuth:</string>
+    <string name="helper_tilt" translatable="false">Tilt (m+e):</string>
+    <string name="helper_mts" translatable="false">mts.</string>
+
+    <string name="default_height" translatable="false">30.0</string>
+    <string name="default_alpha_azimuth" translatable="false">0</string>
+    <string name="default_beta_azimuth" translatable="false">120</string>
+    <string name="default_gamma_azimuth" translatable="false">240</string>
+    <string name="default_tilt" translatable="false">4</string>
+
+
+    <!-- Drawer Strings -->
+    <string name="nav_username_default" translatable="false">Upgrade.do</string>
+    <string name="nav_user_email_default" translatable="false">http://upgrade.do</string>
+
+    <string name="option_map">Map</string>
+    <string name="option_sites_list">Sites List</string>
+    <string name="option_add_new_site">Add New Site</string>
+    <string name="tittle_control_menu">Control Menu</string>
+    <string name="option_settings">Settings</string>
+    <string name="option_about">About</string>
+
+
+    <!-- Settings Tittles -->
     <string name="action_settings">Settings</string>
+
+
+    <!-- Activity About -->
     <string name="title_activity_about">About Upgrade</string>
-    <string name="large_text">
-        "Upgrade Developers Group.\n\n"
-
+    <string name="text_about">
+        "Upgrade Developers Group.
     </string>
+    <string name="dev_email">pgomez@upgrade.do</string>
+    <string name="email_subject">About RF Network Simulator</string>
+    <string name="email_body">
+        "Upgrade Developers Group.\n\n
+        email: pgomez@upgrade.do"
+    </string>
+
+
+    <!-- Activity Settings -->
     <string name="title_activity_settings">Settings</string>
-
-    <!-- Strings related to Settings -->
-
-    <!-- Shared preferences keys -->
+    <!-- Shared Preferences Headers -->
+    <string name="pref_header_map">Map</string>
+    <!-- Shared Preferences keys -->
     <string name="pref_key_map_style" translatable="false">map_style</string>
-    <string name="pref_key_load_dummy_data" translatable="false">load_dummy_data</string>
-
-    <!-- Example General settings -->
-    <string name="pref_header_general">General</string>
-    <!-- -->
+    <!-- Shared  Preferences Titles-->
     <string name="pref_title_map_style">Map style</string>
+    <!-- Shared  Preferences Defaults-->
     <string name="pref_default_map_style" translatable="false">101</string>
+    <!-- Shared Preferences Defaults-->
     <string-array name="pref_list_map_style">
         <item>Normal</item>
         <item>Satellite</item>
@@ -35,19 +79,9 @@
         <item>3</item>
         <item>4</item>
     </string-array>
+
+
     <!-- -->
-    <string name="pref_title_load_dummy_data">Dummy data</string>
-    <string name="pref_description_load_dummy_data">Preload dummy data\n(kill and re-open the app)</string>
-    <string name="pref_default_load_dummy_data" translatable="false">false</string>
-    <!-- -->
-
-
-
-
-
-
-
-
     <string name="pref_title_display_name">Display name</string>
     <string name="pref_default_display_name">John Smith</string>
 

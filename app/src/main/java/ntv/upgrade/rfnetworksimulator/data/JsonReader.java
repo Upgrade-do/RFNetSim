@@ -39,7 +39,6 @@ public class JsonReader {
     }
 
     private Site readSite(android.util.JsonReader reader) throws IOException {
-        long id = -1;
         String name = null;
         List geo = null;
         double height = 0;
@@ -51,9 +50,7 @@ public class JsonReader {
         reader.beginObject();
         while (reader.hasNext()) {
             String field = reader.nextName();
-            if (field.equals("id")) {
-                id = reader.nextLong();
-            } else if (field.equals("name")) {
+            if (field.equals("name")) {
                 name = reader.nextString();
             } else if (field.equals("geo") && reader.peek() != JsonToken.NULL) {
                 geo = readGeoLocation(reader);
@@ -94,7 +91,7 @@ public class JsonReader {
 
     private Sector readSector(android.util.JsonReader reader, List geo, double height) throws IOException {
         int azimuth = -1;
-        long tilt = -1;
+        double tilt = -1;
 
         LatLng latLng = new LatLng(
                 Double.parseDouble(geo.get(0).toString()),
@@ -106,7 +103,7 @@ public class JsonReader {
             if (field.equals("azimuth")) {
                 azimuth = reader.nextInt();
             } else if (field.equals("tilt")) {
-                tilt = reader.nextLong();
+                tilt = reader.nextDouble();
             } else {
                 reader.skipValue();
             }

@@ -14,9 +14,9 @@
             android:id="@+id/siteName_Create"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/tutorial_delete_site"
+            android:background="@color/colorRed"
             android:gravity="center"
-            android:hint="Site Name"
+            android:hint="@string/helper_site_name"
             android:inputType="textPersonName"
             android:padding="8dp"
             android:textColor="@android:color/white"
@@ -32,7 +32,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Lat:"
+                android:text="@string/helper_latitude"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textStyle="bold" />
 
@@ -41,7 +41,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:hint="latitude"
                 android:inputType="numberDecimal"
                 android:textSize="15sp" />
 
@@ -54,7 +53,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Lng:"
+                android:text="@string/helper_longitude"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textStyle="bold" />
 
@@ -63,7 +62,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:hint="longitude"
                 android:inputType="numberDecimal"
                 android:textSize="15sp" />
         </LinearLayout>
@@ -78,7 +76,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Height:"
+                android:text="@string/helper_height"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textStyle="bold" />
 
@@ -87,16 +85,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:hint="height"
                 android:inputType="numberDecimal"
-                android:text="30" />
+                android:text="@string/default_height" />
 
             <TextView
                 android:id="@+id/textView4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="mts."
+                android:text="@string/helper_mts"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
 
             <android.widget.Space
@@ -108,7 +105,7 @@
                 android:layout_width="96dp"
                 android:layout_height="wrap_content"
                 android:checked="false"
-                android:text="Status"
+                android:text="@string/helper_is_operational"
                 android:textStyle="bold" />
         </LinearLayout>
 
@@ -130,7 +127,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="ALPHA"
+                    android:text="@string/helper_alpha"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textStyle="bold" />
 
@@ -140,7 +137,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="BETA"
+                    android:text="@string/helper_beta"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textStyle="bold" />
 
@@ -150,7 +147,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="GAMMA"
+                    android:text="@string/helper_gamma"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -165,7 +162,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="Azimuth:"
+                    android:text="@string/helper_azimuth"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textStyle="bold" />
 
@@ -176,7 +173,7 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:inputType="number"
-                    android:text="0"
+                    android:text="@string/default_alpha_azimuth"
                     android:textSize="15sp" />
 
                 <EditText
@@ -186,7 +183,7 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:inputType="number"
-                    android:text="120"
+                    android:text="@string/default_beta_azimuth"
                     android:textSize="15sp" />
 
                 <EditText
@@ -196,7 +193,7 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:inputType="number"
-                    android:text="240"
+                    android:text="@string/default_gamma_azimuth"
                     android:textSize="15sp" />
             </LinearLayout>
 
@@ -210,7 +207,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="Tilt (m+e):"
+                    android:text="@string/helper_tilt"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textStyle="bold" />
 
@@ -221,7 +218,7 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:inputType="numberDecimal"
-                    android:text="4"
+                    android:text="@string/default_tilt"
                     android:textSize="15sp" />
 
                 <EditText
@@ -231,7 +228,7 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:inputType="numberDecimal"
-                    android:text="4"
+                    android:text="@string/default_tilt"
                     android:textSize="15sp" />
 
                 <EditText
@@ -241,7 +238,7 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:inputType="numberDecimal"
-                    android:text="4"
+                    android:text="@string/default_tilt"
                     android:textSize="15sp" />
             </LinearLayout>
         </LinearLayout>

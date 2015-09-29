@@ -5,27 +5,27 @@
         <item
             android:id="@+id/nav_map"
             android:icon="@android:drawable/ic_menu_mapmode"
-            android:title="Sites Map" />
+            android:title="@string/option_map" />
         <item
             android:id="@+id/nav_sites_list"
             android:icon="@android:drawable/ic_menu_sort_by_size"
-            android:title="Sites List" />
+            android:title="@string/option_sites_list" />
         <item
             android:id="@+id/nav_add_site"
             android:icon="@android:drawable/ic_menu_add"
-            android:title="Add New Site" />
+            android:title="@string/option_add_new_site" />
     </group>
 
-    <item android:title="Control">
+    <item android:title="@string/tittle_control_menu">
         <menu>
             <item
                 android:id="@+id/nav_settings"
                 android:icon="@android:drawable/ic_menu_preferences"
-                android:title="Settings" />
+                android:title="@string/action_settings" />
             <item
                 android:id="@+id/nav_about"
                 android:icon="@android:drawable/ic_menu_info_details"
-                android:title="About" />
+                android:title="@string/option_about" />
         </menu>
     </item>
 </menu>

@@ -31,6 +31,7 @@ public class EditSiteDialogFragment extends DialogFragment {
     private String mAction;
     private Site tempSite = null;
     private LatLng tempGeolocation = null;
+
     private OnFragmentInteractionListener mListener;
 
     public static EditSiteDialogFragment newInstance(String actionRequest) {
@@ -81,9 +82,9 @@ public class EditSiteDialogFragment extends DialogFragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    siteName.setBackgroundResource(R.color.tutorial_edit_site);
+                    siteName.setBackgroundResource(R.color.colorGreen);
                 } else
-                    siteName.setBackgroundResource(R.color.tutorial_delete_site);
+                    siteName.setBackgroundResource(R.color.colorRed);
             }
         });
 

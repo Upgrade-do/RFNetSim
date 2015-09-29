@@ -366,8 +366,8 @@ public class MainActivity extends AppCompatActivity
                     gammaTilt.setText(String.format("%.1f", tempSite.getGamma().getTilt()));
 
                     if (tempSite.isOperational()) {
-                        siteName.setBackgroundResource(R.color.tutorial_edit_site);
-                    } else siteName.setBackgroundResource(R.color.tutorial_delete_site);
+                        siteName.setBackgroundResource(R.color.colorGreen);
+                    } else siteName.setBackgroundResource(R.color.colorRed);
                 }
                 return view;
             }

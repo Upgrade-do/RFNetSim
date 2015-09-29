@@ -17,13 +17,4 @@ public class Preferences {
                 context.getString(R.string.pref_key_map_style),
                 context.getString(R.string.pref_default_map_style));
     }
-
-    public static boolean getPreferenceDummyData(Context context) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        return prefs.getBoolean(
-                context.getString(R.string.pref_key_load_dummy_data),
-                Boolean.parseBoolean(context.getString(R.string.pref_default_load_dummy_data)));
-    }
-
-
 }

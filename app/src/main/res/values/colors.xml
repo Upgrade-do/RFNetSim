@@ -6,10 +6,6 @@
     <color name="colorAccent">#FF3D00</color>
     <color name="colorAccentLight">#FF6E40</color>
 
-    <color name="tutorial_intro">#9400D3</color>
-    <color name="tutorial_add_new_site">#2196F3</color>
-    <color name="tutorial_view_site_info">#FFC107</color>
-    <color name="tutorial_edit_site">#4CAF50</color>
-    <color name="tutorial_delete_site">#F44336</color>
-    <color name="tutorial_outro">#009688</color>
+    <color name="colorGreen">#4CAF50</color>
+    <color name="colorRed">#F44336</color>
 </resources>
