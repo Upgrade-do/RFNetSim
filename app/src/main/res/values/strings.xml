@@ -26,10 +26,10 @@
     <string name="default_gamma_azimuth" translatable="false">240</string>
     <string name="default_tilt" translatable="false">4</string>
 
-    <string name="site_with_no_name">I have no name, i won\'t behave</string>
-    <string name="creating_new_site">A new site will be created at coordinates:\n(%1$f, %2$f).</string>
-    <string name="deleting_site"><b>%1$s</b> is about to be deleted.</string>
-    <string name="confirm_action">\nWould you like to continue?</string>
+    <string name="site_with_no_name">I have no name :(</string>
+    <string name="creating_new_site">A new site will be created at coordinates:\n(%1$f, %2$f)</string>
+    <string name="deleting_site">The site %1$s is about to be deleted.</string>
+    <string name="confirm_action">\n\nWould you like to continue?</string>
 
 
     <!-- Drawer Strings -->

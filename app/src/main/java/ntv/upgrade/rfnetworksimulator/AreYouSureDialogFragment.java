@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,7 +49,7 @@ public class AreYouSureDialogFragment extends DialogFragment {
         View rootView = inflater.inflate(R.layout.do_you_wanna, container, false);
 
         TextView title = (TextView) getDialog().findViewById(android.R.id.title);
-        title.setTextColor(ContextCompat.getColor(getActivity(), R.color.colorPrimary));
+        title.setTextColor(ContextCompat.getColor(getActivity(), R.color.colorAccent));
 
         TextView doYouWannaTextView = (TextView) rootView.findViewById(R.id.doYouWannaTextView);
         ImageButton acceptButton = (ImageButton) rootView.findViewById(R.id.acceptButton);
@@ -62,9 +63,9 @@ public class AreYouSureDialogFragment extends DialogFragment {
                             MainActivity.tempGeolocation.longitude));
         } else {
             getDialog().setTitle("Delete Site");
-            doYouWannaTextView.setText(String.format(
+            doYouWannaTextView.setText(Html.fromHtml(String.format(
                     getResources().getString(R.string.deleting_site),
-                    MainActivity.tempSite.getName()));
+                    "<b>" + MainActivity.tempSite.getName().toUpperCase() + "</b>")));
         }
         doYouWannaTextView.append(getResources().getString(R.string.confirm_action));
 

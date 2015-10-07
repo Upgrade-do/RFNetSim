@@ -33,7 +33,7 @@ public class ListAdapter extends ArrayAdapter<Site> {
         if (v == null) {
             LayoutInflater vi;
             vi = LayoutInflater.from(getContext());
-            v = vi.inflate(R.layout.list_item_site, null);
+            v = vi.inflate(R.layout.site_view_layout, null);
         }
 
         Site site = getItem(position);
@@ -41,7 +41,7 @@ public class ListAdapter extends ArrayAdapter<Site> {
         if (site != null) {
             TextView siteName = (TextView) v.findViewById(R.id.textView_Site_Name);
             TextView latLng = (TextView) v.findViewById(R.id.textView_Lat_Lng);
-            TextView heigh = (TextView) v.findViewById(R.id.textView_heigh);
+            TextView height = (TextView) v.findViewById(R.id.textView_height);
 
             TextView alphaAzimuth = (TextView) v.findViewById(R.id.alphaAzimuth_textView);
             TextView betaAzimuth = (TextView) v.findViewById(R.id.betaAzimuth_textView);
@@ -60,8 +60,8 @@ public class ListAdapter extends ArrayAdapter<Site> {
             if (latLng != null) {
                 latLng.setText(String.format("(%.6f, %.6f)", site.getGeo().latitude, site.getGeo().longitude));
             }
-            if (heigh != null) {
-                heigh.setText(String.format("Height: %.2f mts", site.getHeight()));
+            if (height != null) {
+                height.setText(String.format("Height: %.2f mts", site.getHeight()));
             }
             if (alphaAzimuth != null) {
                 alphaAzimuth.setText(String.format("%d", site.getAlpha().getAzimuth()));
@@ -81,8 +81,9 @@ public class ListAdapter extends ArrayAdapter<Site> {
             if (gammaTilt != null) {
                 gammaTilt.setText(String.format("%.1f", site.getGamma().getTilt()));
             }
-
         }
+
+
         return v;
     }
 

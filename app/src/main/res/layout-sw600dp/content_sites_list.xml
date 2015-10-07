@@ -12,7 +12,8 @@
         android:id="@+id/gridview_sites_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
         android:horizontalSpacing="8dp"
         android:numColumns="2"
         android:verticalSpacing="8dp" />

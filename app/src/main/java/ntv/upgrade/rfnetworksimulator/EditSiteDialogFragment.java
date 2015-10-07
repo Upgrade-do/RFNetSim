@@ -59,7 +59,7 @@ public class EditSiteDialogFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.dialog_fragment_edit_site, container, false);
+        View rootView = inflater.inflate(R.layout.site_edit_layout, container, false);
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
 
 

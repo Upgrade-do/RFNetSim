@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/view"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="5dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,7 +18,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorAccentLight"
+            android:elevation="5dp"
             android:gravity="center"
+            android:lines="1"
+            android:minWidth="300dp"
+            android:padding="4dp"
             android:text="@string/helper_site_name"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@android:color/white"
@@ -24,26 +30,27 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:background="@color/colorPrimaryLight"
+            android:elevation="3dp"
             android:gravity="center"
             android:orientation="horizontal"
-            android:weightSum="6">
+            android:weightSum="2">
 
             <TextView
                 android:id="@+id/textView_Lat_Lng"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"
+                android:layout_weight="1"
                 android:gravity="center"
                 android:text="@string/helper_geolocation"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
 
             <TextView
-                android:id="@+id/textView_heigh"
+                android:id="@+id/textView_height"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"
+                android:layout_weight="1"
                 android:gravity="center"
                 android:text="@string/helper_height"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
@@ -177,5 +184,14 @@
                     android:textAppearance="?android:attr/textAppearanceMedium" />
             </LinearLayout>
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/textView_click_to_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingBottom="8dp"
+            android:text="@string/helper_click_to_edit"
+            android:visibility="gone" />
     </LinearLayout>
 </android.support.v7.widget.CardView>

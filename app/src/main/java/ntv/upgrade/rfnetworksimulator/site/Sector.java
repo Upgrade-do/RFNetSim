@@ -16,7 +16,7 @@ public class Sector {
      */
     private static final long ELECTRICAL_TILT = 2;
     // earth radius in KM
-    private static final long EARTH_RADIUS = 6367;
+    private static final long EARTH_RADIUS = 6371;
     //
     private static final int RANGE_WITH = 60;
 
@@ -122,7 +122,7 @@ public class Sector {
 
     // // TODO: 9/27/2015 Discover what does this function do, and comment it to de detail.
     private void calculateRange() {
-        this.range = (height) / Math.sin(Math.toRadians(getTilt()));
+        this.range = (this.height) / Math.sin(Math.toRadians(getTilt()));
     }
 
     /**
@@ -162,19 +162,19 @@ public class Sector {
      * helper function for recalculate().
      */
     private int angleForP1() {
-        if (this.azimuth - (RANGE_WITH / 2) < 0) {
-            return this.azimuth + 360 - (RANGE_WITH / 2);
+        if (getAzimuth() - (RANGE_WITH / 2) < 0) {
+            return getAzimuth() + 360 - (RANGE_WITH / 2);
         }
-        return this.azimuth - (RANGE_WITH / 2);
+        return getAzimuth() - (RANGE_WITH / 2);
     }
 
     /**
      * helper function for recalculate().
      */
     private int angleForP2() {
-        if (this.azimuth + (RANGE_WITH / 2) > 360) {
-            return this.azimuth - 360 - (RANGE_WITH / 2);
+        if (getAzimuth() + (RANGE_WITH / 2) > 360) {
+            return getAzimuth() - 360 + (RANGE_WITH / 2);
         }
-        return this.azimuth + (RANGE_WITH / 2);
+        return getAzimuth() + (RANGE_WITH / 2);
     }
 }

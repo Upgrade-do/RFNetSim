@@ -59,10 +59,11 @@ public class MainActivity extends AppCompatActivity
     // Site used to handle a single site
     protected static Site tempSite = null;
     protected static LatLng tempGeolocation;
-    // for log pospuses
+    // for log porpuses
     private final String LOG_TAG = MainActivity.class.getSimpleName();
     // name of the file to preserve data
     private final String SITES_DATA_FILE_NAME = "sites_data";
+    private LatLng selectedSite;
     // Client used to interact with Google APIs.
     private GoogleApiClient mGoogleApiClient;
 
@@ -116,6 +117,14 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            LatLng geo = (LatLng) bundle.get("geo");
+            if (geo != null) {
+                selectedSite = geo;
+            }
+        }
 
         // Floating action button to create a new site at the center of the map when clicked
         FloatingActionButton fab_add_new_site = (FloatingActionButton) findViewById(R.id.fab_add_new_site);
@@ -211,7 +220,6 @@ public class MainActivity extends AppCompatActivity
 
         setInfoWindows();
         setOnMapClickListener();
-
     }
 
     @Override
@@ -298,6 +306,9 @@ public class MainActivity extends AppCompatActivity
         Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (mLastLocation != null)
             centerMapOnLocation(mLastLocation);
+        if (selectedSite != null) {
+            centerMapOnlocation(selectedSite);
+        }
     }
 
     @Override
@@ -315,8 +326,17 @@ public class MainActivity extends AppCompatActivity
                         mGoogleApiClient.connect();
                     }
                 })
-                        //.setActionTextColor(R.color.tutorial_edit_site)
+                .setActionTextColor(getResources().getColor(R.color.colorAccent))
                 .show();
+    }
+
+    /**
+     * Center map on a given @param geo
+     */
+    private void centerMapOnlocation(LatLng geo) {
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                new LatLng(geo.latitude, geo.longitude), 13));
+
     }
 
     /**
@@ -334,11 +354,14 @@ public class MainActivity extends AppCompatActivity
         mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
             public View getInfoWindow(Marker arg0) {
 
-                View view = getLayoutInflater().inflate(R.layout.custom_infowindow, null);
+                View view = getLayoutInflater().inflate(R.layout.site_view_layout, null);
 
-                TextView siteName = (TextView) view.findViewById(R.id.siteName_editText);
-                TextView siteCoordinates = (TextView) view.findViewById(R.id.siteCoordinates_textView);
-                TextView siteHeight = (TextView) view.findViewById(R.id.siteHeight_textView);
+                TextView clickToEdit = (TextView) view.findViewById(R.id.textView_click_to_edit);
+                clickToEdit.setVisibility(View.VISIBLE);
+
+                TextView siteName = (TextView) view.findViewById(R.id.textView_Site_Name);
+                TextView siteCoordinates = (TextView) view.findViewById(R.id.textView_Lat_Lng);
+                TextView siteHeight = (TextView) view.findViewById(R.id.textView_height);
 
                 TextView alphaAzimuth = (TextView) view.findViewById(R.id.alphaAzimuth_textView);
                 TextView betaAzimuth = (TextView) view.findViewById(R.id.betaAzimuth_textView);
@@ -348,13 +371,15 @@ public class MainActivity extends AppCompatActivity
                 TextView betaTilt = (TextView) view.findViewById(R.id.betaTilt_textView);
                 TextView gammaTilt = (TextView) view.findViewById(R.id.gammaTilt_textView);
 
-                tempSite = getSiteByName(arg0.getTitle());
+                tempSite = getSiteByLocation(arg0.getPosition());
 
                 if (tempSite != null) {
 
                     siteName.setText(tempSite.getName());
-                    siteCoordinates.setText(String.format("( %.6f, %.6f )"
+
+                    siteCoordinates.setText(String.format("(%.5f, %.5f)"
                             , tempSite.getGeo().latitude, tempSite.getGeo().longitude));
+
                     siteHeight.setText(String.format("%.2f mts", tempSite.getHeight()));
 
                     alphaAzimuth.setText(String.format("%d", tempSite.getAlpha().getAzimuth()));
@@ -471,16 +496,6 @@ public class MainActivity extends AppCompatActivity
         newEditSiteDialogFragment.show(getFragmentManager(), "Edit DialogFragment");
     }
 
-    private Site getSiteByName(String siteName) {
-
-        for (Site site : mSitesArrayList) {
-            if (site.getName().equals(siteName)) {
-                return site;
-            }
-        }
-        return null;
-    }
-
     private Site getSiteByLocation(LatLng geo) {
 
         for (Site site : mSitesArrayList) {
@@ -534,12 +549,24 @@ public class MainActivity extends AppCompatActivity
             image = BitmapDescriptorFactory.fromResource(R.mipmap.antenna_off);
         }
 
-        mMap.addMarker(new MarkerOptions()
+
+        if (selectedSite != null) {
+            centerMapOnlocation(selectedSite);
+        }
+
+        Marker marker = mMap.addMarker(new MarkerOptions()
                 .position(site.getGeo())
                 .title(site.getName())
                 .draggable(false)
                 .anchor(0.5f, 0.5f)
                 .icon(image));
+
+        if (selectedSite != null) {
+            if (Math.abs(selectedSite.latitude - marker.getPosition().latitude) < 0.0001
+                    && Math.abs(selectedSite.longitude - marker.getPosition().longitude) < 0.0001)
+                marker.showInfoWindow();
+        }
+
     }
 
     private void displayChanges() {
